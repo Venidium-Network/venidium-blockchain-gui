@@ -12,10 +12,10 @@ import {
   Button,
   InputLabel,
 } from '@material-ui/core';
-import { AlertDialog, Card, Flex } from '@chia/core';
+import { AlertDialog, Card, Flex } from '@venidium/core';
 import isElectron from 'is-electron';
 import { newBuy, newSell, addTrade, resetTrades } from '../../modules/trade';
-import { chia_to_mojo, colouredcoin_to_mojo } from '../../util/chia';
+import { venidium_to_ray, colouredcoin_to_ray } from '../../util/venidium';
 import { openDialog } from '../../modules/dialog';
 import { create_trade_action } from '../../modules/trade_messages';
 import { COLOURED_COIN } from '../../util/wallet_types';
@@ -79,15 +79,15 @@ export default function CreateOffer() {
       );
       return;
     }
-    const mojo =
+    const ray =
       wallets[wallet_id.value].type === COLOURED_COIN
-        ? colouredcoin_to_mojo(amount_input.value)
-        : chia_to_mojo(amount_input.value);
+        ? colouredcoin_to_ray(amount_input.value)
+        : venidium_to_ray(amount_input.value);
 
     const trade =
       buy_or_sell.value === 1
-        ? newBuy(mojo, wallet_id.value)
-        : newSell(mojo, wallet_id.value);
+        ? newBuy(ray, wallet_id.value)
+        : newSell(ray, wallet_id.value);
 
     dispatch(addTrade(trade));
   }

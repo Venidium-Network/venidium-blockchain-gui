@@ -2,13 +2,13 @@ const units = require('../../util/units');
 
 describe('units', () => {
   describe('#getUnit', () => {
-    it('gets unit of chia', () => {
-      const result = units.getUnit('chia');
+    it('gets unit of venidium', () => {
+      const result = units.getUnit('venidium');
 
       expect(result).toBe(1);
     });
-    it('gets unit of mojo', () => {
-      const result = units.getUnit('mojo');
+    it('gets unit of ray', () => {
+      const result = units.getUnit('ray');
 
       expect(result).toBe(1e-12);
     });
@@ -18,17 +18,17 @@ describe('units', () => {
       expect(result).toBe(1e-9);
     });
     it('supports uppercase characters', () => {
-      const result = units.getUnit('CHIA');
+      const result = units.getUnit('VENIDIUM');
 
       expect(result).toBe(1);
     });
-    it('gets unit of chia using alias', () => {
-      const result = units.getUnit('ch');
+    it('gets unit of venidium using alias', () => {
+      const result = units.getUnit('xvm');
 
       expect(result).toBe(1);
     });
-    it('gets unit of mojo using alias', () => {
-      const result = units.getUnit('mj');
+    it('gets unit of ray using alias', () => {
+      const result = units.getUnit('r');
 
       expect(result).toBe(1e-12);
     });
@@ -46,19 +46,19 @@ describe('units', () => {
     });
   });
   describe('#getDisplay', () => {
-    it('gets display of chia', () => {
-      const result = units.getDisplay('chia');
+    it('gets display of venidium', () => {
+      const result = units.getDisplay('venidium');
 
       expect(result).toEqual({
-        format: '{amount} CH',
+        format: '{amount} XVM',
         fractionDigits: 12,
       });
     });
-    it('gets display of mojo', () => {
-      const result = units.getDisplay('mojo');
+    it('gets display of ray', () => {
+      const result = units.getDisplay('ray');
 
       expect(result).toEqual({
-        format: '{amount} MJ',
+        format: '{amount} R',
         fractionDigits: 0,
       });
     });
@@ -87,13 +87,13 @@ describe('units', () => {
       expect(result).toEqual(1);
     });
     it('modifies an existing unit', () => {
-      units.setUnit('chia', 9);
+      units.setUnit('venidium', 9);
 
-      const result = units.getUnit('chia');
+      const result = units.getUnit('venidium');
 
       expect(result).toEqual(9);
 
-      units.setUnit('chia', 1);
+      units.setUnit('venidium', 1);
     });
   });
   describe('#setDisplay', () => {
@@ -111,15 +111,15 @@ describe('units', () => {
       });
     });
     it('updates an existing display', () => {
-      units.setDisplay('chia', {
-        format: '{amount} TXCH',
+      units.setDisplay('venidium', {
+        format: '{amount} TXVM',
         fractionDigits: 0,
       });
 
-      const result = units.getDisplay('chia');
+      const result = units.getDisplay('venidium');
 
       expect(result).toEqual({
-        format: '{amount} TXCH',
+        format: '{amount} TXVM',
         fractionDigits: 0,
       });
     });

@@ -5,7 +5,7 @@ import WalletGraph from '../WalletGraph';
 import FarmCard from '../../farm/card/FarmCard';
 import useWallet from '../../../hooks/useWallet';
 import useCurrencyCode from '../../../hooks/useCurrencyCode';
-import { mojo_to_chia_string } from '../../../util/chia';
+import { ray_to_venidium_string } from '../../../util/venidium';
 
 const StyledGraphContainer = styled.div`
   margin-left: -1rem;
@@ -32,14 +32,14 @@ export default function WalletCardTotalBalance(props: Props) {
       title={<Trans>Total Balance</Trans>}
       tooltip={
         <Trans>
-          This is the total amount of chia in the blockchain at the current peak
+          This is the total amount of venidium in the blockchain at the current peak
           sub block that is controlled by your private keys. It includes frozen
           farming rewards, but not pending incoming and outgoing transactions.
         </Trans>
       }
       value={
         <>
-          {mojo_to_chia_string(value)} {currencyCode}
+          {ray_to_venidium_string(value)} {currencyCode}
         </>
       }
       description={

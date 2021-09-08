@@ -1,22 +1,22 @@
 const units = {
-  chia: 1,
-  mojo: 1 / 1e12,
+  venidium: 1,
+  ray: 1 / 1e12,
   colouredcoin: 1 / 1e9,
 };
 
 const aliases = {
-  chia: ['ch', 'chia', 'Chia'],
-  mojo: ['mj', 'mojo'],
+  venidium: ['xvm', 'venidium', 'Venidium'],
+  ray: ['r', 'ray'],
   colouredcoin: ['cc', 'colouredcoin'],
 };
 
 const display = {
-  chia: {
-    format: '{amount} CH',
+  venidium: {
+    format: '{amount} XVM',
     fractionDigits: 12,
   },
-  mojo: {
-    format: '{amount} MJ',
+  ray: {
+    format: '{amount} R',
     fractionDigits: 0,
   },
   colouredcoin: {
