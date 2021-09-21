@@ -71,14 +71,18 @@ export default function Amount(props: AmountProps) {
         }}
         {...rest}
       />
-      {!!ray && (
+      
         <FormHelperText>
           <Flex alignItems="center" gap={2}>
             <Flex flexGrow={1} gap={1}>
-              <FormatLargeNumber value={ray} />
-              <Box>
-                <Plural value={ray} one="ray" other="rays" />
-              </Box>
+              {!!ray && (
+                <>
+                  <FormatLargeNumber value={ray} />
+                  <Box>
+                    <Plural value={ray} one="ray" other="rays" />
+                  </Box>
+                </>
+              )}
             </Flex>
             {children &&
               children({
@@ -87,7 +91,6 @@ export default function Amount(props: AmountProps) {
               })}
           </Flex>
         </FormHelperText>
-      )}
     </FormControl>
   );
 }
