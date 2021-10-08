@@ -18,7 +18,7 @@ function getInstallerConfig () {
     authors: 'Venidium Network',
     version: process.env.VENIDIUM_INSTALLER_VERSION,
     noMsi: true,
-    iconUrl: 'https://raw.githubusercontent.com/Venidium-Network/venidium-blockchain/master/electron-react/src/assets/img/venidium.ico',
+    iconUrl: 'https://raw.githubusercontent.com/Venidium-Network/venidium-blockchain-gui/main/src/assets/img/venidium.ico',
     outputDirectory: path.join(outPath, 'windows-installer'),
     certificateFile: 'win_code_sign_cert.p12',
     certificatePassword: process.env.WIN_CODE_SIGN_PASS,
