@@ -366,6 +366,7 @@ function SendCard(props: SendCardProps) {
   const { wallet_id } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
+  const openDialog = useOpenDialog();
 
   const methods = useForm<SendTransactionData>({
     shouldUnregister: false,
@@ -414,43 +415,36 @@ function SendCard(props: SendCardProps) {
     }
 
     if (syncing) {
-      dispatch(
         openDialog(
           <AlertDialog>
             <Trans>Please finish syncing before making a transaction</Trans>
           </AlertDialog>,
-        ),
       );
       return;
     }
 
     const amount = data.amount.trim();
     if (!isNumeric(amount)) {
-      dispatch(
         openDialog(
           <AlertDialog>
             <Trans>Please enter a valid numeric amount</Trans>
           </AlertDialog>,
-        ),
       );
       return;
     }
 
     const fee = data.fee.trim();
     if (!isNumeric(fee)) {
-      dispatch(
         openDialog(
           <AlertDialog>
             <Trans>Please enter a valid numeric fee</Trans>
           </AlertDialog>,
-        ),
       );
       return;
     }
 
     let address = data.address;
     if (address.includes('colour')) {
-      dispatch(
         openDialog(
           <AlertDialog>
             <Trans>
@@ -458,7 +452,6 @@ function SendCard(props: SendCardProps) {
               address.
             </Trans>
           </AlertDialog>,
-        ),
       );
       return;
     }

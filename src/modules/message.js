@@ -18,7 +18,7 @@ import {
   presentBackupInfo,
   selectFilePath,
 } from './backup';
-import { exitDaemon } from './daemon_messages';
+import { daemonMessage, exitDaemon, keyringStatus } from './daemon_messages';
 import { wsDisconnect } from './websocket';
 import config from '../config/config';
 
@@ -62,6 +62,11 @@ export const showCreateBackup = (show) => ({
   show,
 });
 
+export const skipKeyringMigration = (skip) => ({
+  type: 'SKIP_KEYRING_MIGRATION',
+  skip,
+});
+
 export const async_api = (dispatch, action, openSpinner, usePromiseReject) => {
   if (openSpinner) {
     dispatch(openProgress());
@@ -71,7 +76,9 @@ export const async_api = (dispatch, action, openSpinner, usePromiseReject) => {
     action.resolve = resolve;
     action.reject = reject;
   }).finally(() => {
+    if (openSpinner) {
     dispatch(closeProgress());
+    }
   });
 
   action.usePromiseReject = usePromiseReject;
@@ -816,23 +823,23 @@ export const recover_did_action = (filename) => {
     return async_api(dispatch, recover_did_wallet(filename), true).then(
       (response) => {
         dispatch(closeProgress());
-        dispatch(createState(true, false));
-        if (response.data.success) {
-          // Go to wallet
-          dispatch(format_message('get_wallets', {}));
+    dispatch(createState(true, false));
+    if (response.data.success) {
+      // Go to wallet
+      dispatch(format_message('get_wallets', {}));
           const id = response.data.wallet_id;
           dispatch(
             format_message('did_get_information_needed_for_recovery', {
               wallet_id: id,
             }),
           );
-          dispatch(showCreateBackup(false));
-          dispatch(createState(true, false));
-          dispatch(changeCreateWallet(ALL_OPTIONS));
-        } else {
+      dispatch(showCreateBackup(false));
+      dispatch(createState(true, false));
+      dispatch(changeCreateWallet(ALL_OPTIONS));
+    } else {
           const error = response.data.error;
-          dispatch(openErrorDialog(error));
-        }
+      dispatch(openErrorDialog(error));
+    }
         return response;
       },
     );
@@ -928,11 +935,11 @@ export const did_recovery_spend_action = (wallet_id, attest_filenames) => {
 };
 
 export const did_create_attest = (
-  wallet_id,
+    wallet_id,
   filename,
-  coin_name,
-  pubkey,
-  puzhash,
+    coin_name,
+    pubkey,
+    puzhash,
 ) => {
   var action = walletMessage();
   action.message.command = 'did_create_attest';
@@ -962,3 +969,114 @@ export const did_get_recovery_info = (wallet_id) => {
   action.message.data = { wallet_id: wallet_id };
   return action;
 };
+
+export const unlock_keyring = (key) => {
+  const action = daemonMessage();
+  action.message.command = 'unlock_keyring';
+  action.message.data = { key: key };
+  return action;
+}
+
+export const unlock_keyring_action = (key, onFailure) => (dispatch) => {
+  return async_api(dispatch, unlock_keyring(key), false, true).then(
+    (response) => {
+      if (response.data.success) {
+        dispatch(refreshAllState());
+      } else if (onFailure) {
+        const { error } = response.data;
+        onFailure(error);
+      }
+    }
+  );
+};
+
+export const migrate_keyring = (passphrase, passphrase_hint, save_passphrase, cleanup_legacy_keyring) => {
+  const action = daemonMessage();
+  action.message.command = 'migrate_keyring';
+  action.message.data = { passphrase: passphrase, passphrase_hint: passphrase_hint, save_passphrase: save_passphrase, cleanup_legacy_keyring: cleanup_legacy_keyring };
+  return action;
+}
+
+export const migrate_keyring_action = (passphrase, passphraseHint, savePassphrase, cleanup_legacy_keyring, onFailure) => (dispatch) => {
+  return async_api(dispatch, migrate_keyring(passphrase, passphraseHint, savePassphrase, cleanup_legacy_keyring), false, true).then(
+    (response) => {
+      if (response.data.success) {
+        dispatch(keyringStatus());
+      } else if (onFailure) {
+        const { error } = response.data;
+        onFailure(error);
+      }
+    }
+  );
+}
+
+export const change_keyring_passphrase = (current_passphrase, new_passphrase, passphrase_hint, save_passphrase) => {
+  const action = daemonMessage();
+  action.message.command = 'set_keyring_passphrase';
+  action.message.data = { current_passphrase: current_passphrase, new_passphrase: new_passphrase, passphrase_hint: passphrase_hint, save_passphrase: save_passphrase };
+  return action;
+}
+
+export const change_keyring_passphrase_action = (current_passphrase, new_passphrase, passphraseHint, savePassphrase, onSuccess, onFailure) => (dispatch) => {
+  return async_api(dispatch, change_keyring_passphrase(current_passphrase, new_passphrase, passphraseHint, savePassphrase), false, true).then(
+    (response) => {
+      if (response.data.success) {
+        dispatch(keyringStatus());
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+      else if (onFailure) {
+        const { error } = response.data;
+        onFailure(error);
+      }
+    }
+  );
+}
+
+export const remove_keyring_passphrase = (current_passphrase) => {
+  const action = daemonMessage();
+  action.message.command = 'remove_keyring_passphrase';
+  action.message.data = { current_passphrase: current_passphrase };
+  return action;
+}
+
+export const remove_keyring_passphrase_action = (current_passphrase, onSuccess, onFailure) => (dispatch) => {
+  return async_api(dispatch, remove_keyring_passphrase(current_passphrase), false, true).then(
+    (response) => {
+      if (response.data.success) {
+        dispatch(keyringStatus());
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+      else if (onFailure) {
+        const { error } = response.data;
+        onFailure(error);
+      }
+    }
+  );
+}
+
+export const validate_keyring_passphrase = (key) => {
+  const action = daemonMessage();
+  action.message.command = 'validate_keyring_passphrase';
+  action.message.data = { key: key };
+  return action;
+}
+
+export const validate_keyring_passphrase_action = (key, onSuccess, onFailure) => (dispatch) => {
+  return async_api(dispatch, validate_keyring_passphrase(key)).then(
+    (response) => {
+      if (response.data.success) {
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+      else if (onFailure) {
+        const { error } = response.data;
+        onFailure(error);
+      }
+    }
+  );
+}

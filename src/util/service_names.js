@@ -4,7 +4,7 @@ export const service_farmer = 'venidium_farmer';
 export const service_harvester = 'venidium_harvester';
 export const service_simulator = 'venidium_full_node_simulator';
 export const service_daemon = 'daemon';
-export const service_plotter = 'venidium plots create';
+export const service_plotter = 'venidium_plotter';
 
 // Corresponds with outbound_message.py NodeTypes
 export const service_connection_types = {

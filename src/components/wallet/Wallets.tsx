@@ -125,12 +125,12 @@ export default function Wallets() {
             textColor="primary"
             scrollButtons="auto"
             variant="scrollable"
-          >
-            {wallets?.map((wallet) => (
+    >
+                {wallets?.map((wallet) => (
               <Tab label={wallet.name} value={String(wallet.id)} key={wallet.id} />
-            ))}
+                ))}
             <Tab value="create" label={<Trans>+ Add Wallet</Trans>} />
-          </StyledTabs>
+              </StyledTabs>
         </Container>
       ) : undefined}
     >
