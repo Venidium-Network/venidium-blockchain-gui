@@ -43,10 +43,10 @@ async function prepareSubmitData(data: FormData): SubmitData {
     initialTargetState.relative_lock_height = relative_lock_height;
   }
 
-  const feeMojos = venidium_to_ray(fee);
+  const feeRays = venidium_to_ray(fee);
 
   return {
-    fee: feeMojos,
+    fee: feeRays,
     initialTargetState,
   };
 }
